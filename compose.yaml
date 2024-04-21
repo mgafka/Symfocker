@@ -1,0 +1,48 @@
+services:
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+      - ./docker/database/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/certs:/etc/nginx/certs
+    depends_on:
+      - php-fpm
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - app
+  php-fpm:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: dev
+    volumes:
+      - ./:/var/www
+    networks:
+      - app
+volumes:
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
+networks:
+  app:
