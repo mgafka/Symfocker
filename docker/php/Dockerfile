@@ -11,8 +11,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg gnupg1 gnupg2 \
     sudo \
     ssh \
+    libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install \
     pdo_mysql \
+    pgsql \
+    pdo_pgsql \
     soap \
     zip \
     opcache \
