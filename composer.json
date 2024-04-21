@@ -1,0 +1,10 @@
+{
+    "name": "mgafka/symfocker",
+    "authors": [
+        {
+            "name": "Michał Gafka",
+            "email": "mgafka@gmail.com"
+        }
+    ],
+    "require": {}
+}
